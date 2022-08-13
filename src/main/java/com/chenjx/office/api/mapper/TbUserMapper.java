@@ -3,6 +3,8 @@ package com.chenjx.office.api.mapper;
 import com.chenjx.office.api.entity.TbUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.Set;
+
 /**
 * @author chenjx
 * @description 针对表【tb_user(用户表)】的数据库操作Mapper
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface TbUserMapper extends BaseMapper<TbUser> {
 
+    public Set<String> searchUserPermissions(int userId);
 }
 
 
