@@ -30,6 +30,7 @@
                  JOIN tb_permission p ON JSON_CONTAINS(r.permissions, CAST(p.id AS CHAR))
         WHERE u.id=#{userId} AND u.status=1;
     </select>
+
     <select id="login" parameterType="HashMap" resultType="Integer">
         SELECT id
         FROM tb_user
@@ -37,5 +38,11 @@
         AND password = HEX(AES_ENCRYPT(#{password}, #{userName}))
         LIMIT 1;
     </select>
+    
+    <update id="updatePassword" parameterType="HashMap">
+        UPDATE tb_user
+            SET password = HEX(AES_ENCRYPT(#{password}, username))
+        WHERE id = #{userId}
+    </update>
 
 </mapper>

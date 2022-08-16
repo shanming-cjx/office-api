@@ -18,6 +18,8 @@ public interface TbUserMapper extends BaseMapper<TbUser> {
 
     Integer login(HashMap map);
 
+    int updatePassword(HashMap map);
+
 }
 
 

@@ -32,6 +32,12 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
         Set<String> permissions = userMapper.searchUserPermissions(userId);
         return permissions;
     }
+
+    @Override
+    public int updatePassword(HashMap map) {
+        int updatedRows = userMapper.updatePassword(map);
+        return updatedRows;
+    }
 }
 
 

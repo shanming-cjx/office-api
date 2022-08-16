@@ -14,4 +14,5 @@ import java.util.Set;
 public interface TbUserService extends IService<TbUser> {
     Integer login(HashMap map);
     Set<String> searchUserPermissionsByUserId(int userId);
+    int updatePassword(HashMap map);
 }

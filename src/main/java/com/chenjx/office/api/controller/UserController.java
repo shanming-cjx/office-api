@@ -1,16 +1,15 @@
 package com.chenjx.office.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.Resp;
 import com.chenjx.office.api.controller.request.LoginRequest;
+import com.chenjx.office.api.controller.request.LogoutRequest;
 import com.chenjx.office.api.service.impl.TbUserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -41,5 +40,27 @@ public class UserController {
 
     }
 
+    @GetMapping("/logout")
+    @SaCheckLogin
+    @Operation(summary = "登出")
+    public Resp Logout(){
+        StpUtil.logout();//删除Redis的token
+        return Resp.ok();
+    }
+
+
+    @PostMapping("/updatePassword")
+    @SaCheckLogin
+    @Operation(summary = "修改密码")
+    public Resp updatePassword(@Valid @RequestBody LogoutRequest req){
+        int userId = StpUtil.getLoginIdAsInt();//将token里的userId提取出来
+        HashMap map = new HashMap(){{//将查询条件userId和要修改的密码封装到参数map
+           put("userId",userId);
+           put("password",req.getPassword());
+        }};
+        int updateRows = userService.updatePassword(map);
+        StpUtil.logout();//删除Redis的token
+        return Resp.ok().put("rows",updateRows);
+    }
 
 }
