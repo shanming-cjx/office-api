@@ -3,6 +3,9 @@ package com.chenjx.office.api.mapper;
 import com.chenjx.office.api.entity.TbRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
 * @author chenjx
 * @description 针对表【tb_role(角色表)】的数据库操作Mapper
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.chenjx.office.api.entity.TbRole
 */
 public interface TbRoleMapper extends BaseMapper<TbRole> {
-
+    ArrayList<HashMap> searchAllRole();
 }
 
 

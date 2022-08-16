@@ -13,8 +13,10 @@
             <result property="systemic" column="systemic" jdbcType="TINYINT"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id,role_name,permissions,
-        desc,default_permissions,systemic
-    </sql>
+
+    <select id="searchAllRole" resultType="java.util.HashMap">
+        SELECT id,
+               role_name AS roleName
+        FROM tb_role ORDER BY id
+    </select>
 </mapper>

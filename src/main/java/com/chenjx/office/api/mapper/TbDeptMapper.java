@@ -3,6 +3,9 @@ package com.chenjx.office.api.mapper;
 import com.chenjx.office.api.entity.TbDept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
 * @author chenjx
 * @description 针对表【tb_dept】的数据库操作Mapper
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.chenjx.office.api.entity.TbDept
 */
 public interface TbDeptMapper extends BaseMapper<TbDept> {
-
+    ArrayList<HashMap> searchAllDept();
 }
 
 

@@ -1,12 +1,16 @@
 package com.chenjx.office.api.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
+import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
 import com.chenjx.office.api.controller.request.LoginRequest;
 import com.chenjx.office.api.controller.request.LogoutRequest;
-import com.chenjx.office.api.service.impl.TbUserServiceImpl;
+import com.chenjx.office.api.controller.request.SearchUserByPageRequest;
+import com.chenjx.office.api.service.TbUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +26,7 @@ import java.util.Set;
 public class UserController {
 
     @Resource
-    TbUserServiceImpl userService;
+    TbUserService userService;
 
     @PostMapping("/login")
     @Operation(summary = "登录校验")
@@ -30,11 +34,11 @@ public class UserController {
         HashMap requestParam = JSONUtil.parse(req).toBean(HashMap.class);
         Integer userId = userService.login(requestParam);
         Resp response = Resp.ok().put("result", userId != null);//userId不为空：result=true || 为空 result=false
-        if (userId != null){
+        if (userId != null) {
             StpUtil.setLoginId(userId);
             Set<String> permissions = userService.searchUserPermissionsByUserId(userId);//封装用户（多个）权限成Set集合
-            String token=StpUtil.getTokenInfo().getTokenValue();
-            response.put("permissions",permissions).put("token",token);
+            String token = StpUtil.getTokenInfo().getTokenValue();
+            response.put("permissions", permissions).put("token", token);
         }
         return response;
 
@@ -43,24 +47,37 @@ public class UserController {
     @GetMapping("/logout")
     @SaCheckLogin
     @Operation(summary = "登出")
-    public Resp Logout(){
+    public Resp Logout() {
         StpUtil.logout();//删除Redis的token
         return Resp.ok();
     }
 
-
     @PostMapping("/updatePassword")
     @SaCheckLogin
     @Operation(summary = "修改密码")
-    public Resp updatePassword(@Valid @RequestBody LogoutRequest req){
+    public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {
         int userId = StpUtil.getLoginIdAsInt();//将token里的userId提取出来
-        HashMap map = new HashMap(){{//将查询条件userId和要修改的密码封装到参数map
-           put("userId",userId);
-           put("password",req.getPassword());
+        HashMap map = new HashMap() {{//将查询条件userId和要修改的密码封装到参数map
+            put("userId", userId);
+            put("password", req.getPassword());
         }};
-        int updateRows = userService.updatePassword(map);
+        int updateRows = userService.updatePasswordByUserId(map);
         StpUtil.logout();//删除Redis的token
-        return Resp.ok().put("rows",updateRows);
+        return Resp.ok().put("rows", updateRows);
     }
+
+    @PostMapping("/searchUserByPage")
+    @SaCheckPermission(value = {"ROOT", "USER:SELECT"}, mode = SaMode.OR)//仅管理员和拥有查询权限的用户可以访问
+    @Operation(summary = "用户多条件分页查询")
+    public Resp searchUserByPage(@Valid @RequestBody SearchUserByPageRequest req) {
+        int page = req.getPage();
+        int length = req.getLength();
+        int start = (page - 1) * length;
+        HashMap param = JSONUtil.parse(req).toBean(HashMap.class);
+        param.put("start", start);
+        PageUtils pageUtils = userService.searchUserByPage(param);
+        return Resp.ok().put("pageData", pageUtils);
+    }
+
 
 }

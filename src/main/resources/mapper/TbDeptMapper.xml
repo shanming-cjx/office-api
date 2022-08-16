@@ -12,8 +12,10 @@
             <result property="desc" column="desc" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id,dept_name,tel,
-        email,desc
-    </sql>
+    <select id="searchAllDept" resultType="java.util.HashMap">
+        SELECT id,
+               dept_name AS deptName
+        FROM tb_dept
+        ORDER BY id
+    </select>
 </mapper>

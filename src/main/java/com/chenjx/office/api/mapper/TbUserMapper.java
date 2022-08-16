@@ -3,6 +3,7 @@ package com.chenjx.office.api.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chenjx.office.api.entity.TbUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -19,6 +20,10 @@ public interface TbUserMapper extends BaseMapper<TbUser> {
     Integer login(HashMap map);
 
     int updatePassword(HashMap map);
+
+    ArrayList<HashMap> searchUserByPage(HashMap map);
+
+    long searchUserCount(HashMap map);
 
 }
 
