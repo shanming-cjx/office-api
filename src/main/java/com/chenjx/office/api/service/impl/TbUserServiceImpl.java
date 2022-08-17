@@ -50,6 +50,12 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
         return new PageUtils(list, count, pageIndex, pageSize);
     }
 
+    @Override
+    public int insertUser(TbUser user) {
+        int insertedRows = userMapper.insertUser(user);
+        return insertedRows;
+    }
+
 }
 
 

@@ -33,7 +33,7 @@ public class SearchUserByPageRequest {
     @Schema(description = "角色")
     private String role;
 
-    @Min(value = 1, message = "dept不能小于1")
+    @Min(value = 1, message = "dept不能小于1")//可为空，若不为空则最小值为1
     private Integer deptId;
 
     @Min(value = 1, message = "status不能小于1")

@@ -7,9 +7,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
+import com.chenjx.office.api.controller.request.InsertUserRequest;
 import com.chenjx.office.api.controller.request.LoginRequest;
 import com.chenjx.office.api.controller.request.LogoutRequest;
 import com.chenjx.office.api.controller.request.SearchUserByPageRequest;
+import com.chenjx.office.api.entity.TbUser;
 import com.chenjx.office.api.service.TbUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -45,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    @SaCheckLogin
+    @SaCheckLogin//仅登录后访问
     @Operation(summary = "登出")
     public Resp Logout() {
         StpUtil.logout();//删除Redis的token
@@ -53,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/updatePassword")
-    @SaCheckLogin
+    @SaCheckLogin//仅登录后访问
     @Operation(summary = "修改密码")
     public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {
         int userId = StpUtil.getLoginIdAsInt();//将token里的userId提取出来
@@ -79,5 +82,16 @@ public class UserController {
         return Resp.ok().put("pageData", pageUtils);
     }
 
+    @PostMapping("/insert")
+    @SaCheckPermission(value = {"ROOT", "USER:INSERT"}, mode = SaMode.OR)//仅ROOT或INSERT权限可访问
+    @Operation(summary = "添加用户")
+    public Resp insertUser(@Valid @RequestBody InsertUserRequest req) {
+        TbUser user = JSONUtil.parse(req).toBean(TbUser.class);
+        user.setStatus(1);
+        user.setRole(JSONUtil.parseArray(req.getRole()).toString());
+        user.setCreateTime(new Date());
+        int rows = userService.insertUser(user);
+        return Resp.ok().put("rows", rows);
+    }
 
 }

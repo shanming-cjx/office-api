@@ -25,6 +25,8 @@ public interface TbUserMapper extends BaseMapper<TbUser> {
 
     long searchUserCount(HashMap map);
 
+    int insertUser(TbUser map);
+
 }
 
 
