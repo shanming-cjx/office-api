@@ -56,6 +56,12 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
         return insertedRows;
     }
 
+    @Override
+    public int updateUser(HashMap user) {
+        int updatedRows = userMapper.updateUser(user);
+        return updatedRows;
+    }
+
 }
 
 

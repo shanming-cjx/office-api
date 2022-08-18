@@ -23,4 +23,5 @@ public interface TbUserService extends IService<TbUser> {
     PageUtils searchUserByPage(HashMap map);
 
     int insertUser(TbUser user);
+    int updateUser(HashMap user);
 }

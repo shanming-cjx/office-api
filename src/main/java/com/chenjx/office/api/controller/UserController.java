@@ -7,10 +7,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
-import com.chenjx.office.api.controller.request.InsertUserRequest;
-import com.chenjx.office.api.controller.request.LoginRequest;
-import com.chenjx.office.api.controller.request.LogoutRequest;
-import com.chenjx.office.api.controller.request.SearchUserByPageRequest;
+import com.chenjx.office.api.controller.request.*;
 import com.chenjx.office.api.entity.TbUser;
 import com.chenjx.office.api.service.TbUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,9 +35,9 @@ public class UserController {
         Integer userId = userService.login(requestParam);
         Resp response = Resp.ok().put("result", userId != null);//userId不为空：result=true || 为空 result=false
         if (userId != null) {
-            StpUtil.setLoginId(userId);
+            StpUtil.setLoginId(userId);//sa-token传入用户id登录
             Set<String> permissions = userService.searchUserPermissionsByUserId(userId);//封装用户（多个）权限成Set集合
-            String token = StpUtil.getTokenInfo().getTokenValue();
+            String token = StpUtil.getTokenInfo().getTokenValue();//获取登录用户的token
             response.put("permissions", permissions).put("token", token);
         }
         return response;
@@ -91,6 +88,20 @@ public class UserController {
         user.setRole(JSONUtil.parseArray(req.getRole()).toString());
         user.setCreateTime(new Date());
         int rows = userService.insertUser(user);
+        return Resp.ok().put("rows", rows);
+    }
+
+    @PostMapping("/update")
+    @SaCheckPermission(value = {"ROOT", "USER:UPDATE"}, mode = SaMode.OR)
+    @Operation(summary = "修改用户")
+    public Resp update(@Valid @RequestBody UpdateUserRequest req) {
+        HashMap param = JSONUtil.parse(req).toBean(HashMap.class);
+        param.replace("role", JSONUtil.parseArray(req.getRole()).toString());
+        int rows = userService.updateUser(param);
+        if (rows == 1) {
+            //修改资料后，把该用户踢下线
+            StpUtil.logoutByLoginId(req.getUserId());
+        }
         return Resp.ok().put("rows", rows);
     }
 
