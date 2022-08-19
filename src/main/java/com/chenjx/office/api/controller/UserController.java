@@ -105,4 +105,13 @@ public class UserController {
         return Resp.ok().put("rows", rows);
     }
 
+    @PostMapping("/searchById")
+    @Operation(summary = "根据ID查找用户")
+    @SaCheckPermission(value = {"ROOT", "USER:SELECT"}, mode = SaMode.OR)
+    public Resp searchUserById(@Valid @RequestBody SearchUserByIdRequest req) {
+        HashMap map = userService.searchUserById(req.getUserId());
+        return Resp.ok(map);
+    }
+
+
 }

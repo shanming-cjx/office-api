@@ -21,7 +21,11 @@ public interface TbUserService extends IService<TbUser> {
     int updatePasswordByUserId(HashMap map);
     //多条件分页查询
     PageUtils searchUserByPage(HashMap map);
-
+    //新增用户
     int insertUser(TbUser user);
+    //修改用户信息
     int updateUser(HashMap user);
+    //根据id查询用户信息
+    HashMap searchUserById(int userId);
+
 }

@@ -29,6 +29,8 @@ public interface TbUserMapper extends BaseMapper<TbUser> {
 
     int updateUser(HashMap map);
 
+    HashMap searchUserById(int id);
+
 }
 
 

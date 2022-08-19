@@ -62,6 +62,11 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
         return updatedRows;
     }
 
+    @Override
+    public HashMap searchUserById(int userId) {
+        return userMapper.searchUserById(userId);
+    }
+
 }
 
 

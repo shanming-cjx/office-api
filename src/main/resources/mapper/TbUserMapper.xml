@@ -101,7 +101,7 @@
             AND u.status=#{status}
         </if>
     </select>
-    
+
     <insert id="insertUser" parameterType="com.chenjx.office.api.entity.TbUser">
         INSERT INTO tb_user
         SET
@@ -184,5 +184,11 @@
         WHERE id=#{userId}
     </update>
 
+    <select id="searchUserById" parameterType="int" resultType="java.util.HashMap">
+        SELECT id, username, name, sex, tel, email, hiredate, role, dept_id AS deptId, status,
+               CAST(AES_DECRYPT(UNHEX(password),username) AS CHAR) AS password
+        FROM tb_user
+        WHERE id=#{userId}
+    </select>
 
 </mapper>
