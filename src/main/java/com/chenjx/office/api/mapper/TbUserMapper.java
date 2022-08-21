@@ -31,6 +31,8 @@ public interface TbUserMapper extends BaseMapper<TbUser> {
 
     HashMap searchUserById(int id);
 
+    int deleteUserByIds(Integer[] ids);
+
 }
 
 

@@ -67,6 +67,13 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
         return userMapper.searchUserById(userId);
     }
 
+    @Override
+    public int deleteUserByIds(Integer[] ids) {
+        int rows = userMapper.deleteUserByIds(ids);
+        return rows;
+
+    }
+
 }
 
 

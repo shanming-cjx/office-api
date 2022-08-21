@@ -27,5 +27,7 @@ public interface TbUserService extends IService<TbUser> {
     int updateUser(HashMap user);
     //根据id查询用户信息
     HashMap searchUserById(int userId);
+    //删除非管理员用户
+    int deleteUserByIds(Integer[] ids);
 
 }

@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
@@ -111,6 +112,24 @@ public class UserController {
     public Resp searchUserById(@Valid @RequestBody SearchUserByIdRequest req) {
         HashMap map = userService.searchUserById(req.getUserId());
         return Resp.ok(map);
+    }
+
+    @PostMapping("/deleteUserByIds")
+    @SaCheckPermission(value = {"ROOT", "USER:DELETE"}, mode = SaMode.OR)
+    @Operation(summary = "删除用户")
+    public Resp deleteUserByIds(@Valid @RequestBody DeleteUserByIdsRequest req) {
+        Integer userId = StpUtil.getLoginIdAsInt();
+        if (ArrayUtil.contains(req.getIds(), userId)) {
+            return Resp.error("您是管理员，不能删除自己的帐户");
+        }
+        int rows = userService.deleteUserByIds(req.getIds());
+        if (rows > 0) {
+            //把被删除的用户踢下线
+            for (Integer id : req.getIds()) {
+                StpUtil.logoutByLoginId(id);
+            }
+        }
+        return Resp.ok().put("rows", rows);
     }
 
 
