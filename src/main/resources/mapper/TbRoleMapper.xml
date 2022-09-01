@@ -3,17 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbRoleMapper">
-
-    <resultMap id="BaseResultMap" type="com.chenjx.office.api.entity.TbRole">
-            <id property="id" column="id" jdbcType="OTHER"/>
-            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
-            <result property="permissions" column="permissions" jdbcType="OTHER"/>
-            <result property="desc" column="desc" jdbcType="VARCHAR"/>
-            <result property="defaultPermissions" column="default_permissions" jdbcType="OTHER"/>
-            <result property="systemic" column="systemic" jdbcType="TINYINT"/>
-    </resultMap>
-
-
     <select id="searchAllRole" resultType="java.util.HashMap">
         SELECT id,
                role_name AS roleName

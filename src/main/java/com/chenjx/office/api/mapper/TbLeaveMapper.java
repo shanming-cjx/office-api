@@ -1,7 +1,6 @@
 package com.chenjx.office.api.mapper;
 
-import com.chenjx.office.api.entity.TbLeave;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author chenjx
@@ -9,7 +8,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-08-12 17:03:42
 * @Entity com.chenjx.office.api.entity.TbLeave
 */
-public interface TbLeaveMapper extends BaseMapper<TbLeave> {
+@Mapper
+public interface TbLeaveMapper {
 
 }
 

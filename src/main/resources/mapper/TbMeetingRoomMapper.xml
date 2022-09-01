@@ -4,16 +4,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbMeetingRoomMapper">
 
-    <resultMap id="BaseResultMap" type="com.chenjx.office.api.entity.TbMeetingRoom">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="max" column="max" jdbcType="SMALLINT"/>
-            <result property="desc" column="desc" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        id,name,max,
-        desc,status
-    </sql>
 </mapper>

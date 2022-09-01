@@ -1,24 +1,20 @@
 package com.chenjx.office.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 会议表
+ *
  * @TableName tb_meeting
  */
-@TableName(value ="tb_meeting")
 @Data
 public class TbMeeting implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -96,6 +92,5 @@ public class TbMeeting implements Serializable {
      */
     private Date createTime;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

@@ -1,24 +1,18 @@
 package com.chenjx.office.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 
  * @TableName tb_leave
  */
-@TableName(value ="tb_leave")
 @Data
 public class TbLeave implements Serializable {
     /**
      * 主键ID
      */
-    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -66,6 +60,5 @@ public class TbLeave implements Serializable {
      */
     private Date createTime;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

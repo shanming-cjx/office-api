@@ -4,13 +4,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbFaceModelMapper">
 
-    <resultMap id="BaseResultMap" type="com.chenjx.office.api.entity.TbFaceModel">
-            <id property="id" column="id" jdbcType="OTHER"/>
-            <result property="userId" column="user_id" jdbcType="OTHER"/>
-            <result property="faceModel" column="face_model" jdbcType="VARCHAR"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        id,user_id,face_model
-    </sql>
 </mapper>

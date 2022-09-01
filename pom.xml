@@ -49,17 +49,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.mybatis.spring.boot</groupId>-->
-<!--			<artifactId>mybatis-spring-boot-starter</artifactId>-->
-<!--			<version>2.2.2</version>-->
-<!--		</dependency>-->
-		<!-- 改Mybatis为MybatisPlus -->
+		<!-- Mybatis -->
 		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>3.4.3.1</version>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.2.2</version>
 		</dependency>
+		<!-- 改Mybatis为MybatisPlus -->
+<!--		<dependency>-->
+<!--			<groupId>com.baomidou</groupId>-->
+<!--			<artifactId>mybatis-plus-boot-starter</artifactId>-->
+<!--			<version>3.4.3.1</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>mysql</groupId>

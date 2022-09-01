@@ -1,9 +1,7 @@
 package com.chenjx.office.api.service.impl;
 
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chenjx.office.api.common.util.PageUtils;
-import com.chenjx.office.api.entity.TbMeeting;
 import com.chenjx.office.api.mapper.TbMeetingMapper;
 import com.chenjx.office.api.service.TbMeetingService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +18,13 @@ import java.util.HashMap;
  */
 @Service
 @Slf4j
-public class TbMeetingServiceImpl extends ServiceImpl<TbMeetingMapper, TbMeeting>
-        implements TbMeetingService {
+public class TbMeetingServiceImpl implements TbMeetingService {
 
     @Resource
     private TbMeetingMapper meetingMapper;
 
     @Override
-    public PageUtils searchOfflineMeetingByPage(HashMap param) {
+    public PageUtils searchOfflineMeetingByPage(HashMap param) {//分页查询所有线下会议
         ArrayList<HashMap> list = meetingMapper.searchOfflineMeetingByPage(param);
         long count = meetingMapper.searchOfflineMeetingCount(param);
         int start = (Integer) param.get("start");

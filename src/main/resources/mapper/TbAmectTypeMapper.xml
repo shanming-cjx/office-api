@@ -4,15 +4,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbAmectTypeMapper">
 
-    <resultMap id="BaseResultMap" type="com.chenjx.office.api.entity.TbAmectType">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="type" column="type" jdbcType="VARCHAR"/>
-            <result property="money" column="money" jdbcType="DECIMAL"/>
-            <result property="systemic" column="systemic" jdbcType="TINYINT"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        id,type,money,
-        systemic
-    </sql>
 </mapper>

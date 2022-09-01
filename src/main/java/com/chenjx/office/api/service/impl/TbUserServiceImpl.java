@@ -1,6 +1,5 @@
 package com.chenjx.office.api.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.entity.TbUser;
 import com.chenjx.office.api.mapper.TbUserMapper;
@@ -18,8 +17,7 @@ import java.util.Set;
  * @createDate 2022-08-12 17:03:42
  */
 @Service
-public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
-        implements TbUserService {
+public class TbUserServiceImpl implements TbUserService {
 
     @Resource
     TbUserMapper userMapper;
@@ -51,24 +49,24 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser>
     }
 
     @Override
-    public int insertUser(TbUser user) {
+    public int insertUser(TbUser user) {//新增用户
         int insertedRows = userMapper.insertUser(user);
         return insertedRows;
     }
 
     @Override
-    public int updateUser(HashMap user) {
+    public int updateUser(HashMap user) {//修改用户信息
         int updatedRows = userMapper.updateUser(user);
         return updatedRows;
     }
 
     @Override
-    public HashMap searchUserById(int userId) {
+    public HashMap searchUserById(int userId) {//根据id查询用户信息
         return userMapper.searchUserById(userId);
     }
 
     @Override
-    public int deleteUserByIds(Integer[] ids) {
+    public int deleteUserByIds(Integer[] ids) {//删除非管理员用户
         int rows = userMapper.deleteUserByIds(ids);
         return rows;
 

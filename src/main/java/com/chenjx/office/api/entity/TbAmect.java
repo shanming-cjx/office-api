@@ -1,25 +1,23 @@
 package com.chenjx.office.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 罚金表
+ *
  * @TableName tb_amect
  */
-@TableName(value ="tb_amect")
+
 @Data
 public class TbAmect implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.AUTO)
+
     private Integer id;
 
     /**
@@ -62,6 +60,5 @@ public class TbAmect implements Serializable {
      */
     private Date createTime;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

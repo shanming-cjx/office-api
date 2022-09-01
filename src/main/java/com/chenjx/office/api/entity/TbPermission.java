@@ -1,23 +1,17 @@
 package com.chenjx.office.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
- * 
  * @TableName tb_permission
  */
-@TableName(value ="tb_permission")
 @Data
 public class TbPermission implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.AUTO)
     private Object id;
 
     /**
@@ -35,6 +29,5 @@ public class TbPermission implements Serializable {
      */
     private Object actionId;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

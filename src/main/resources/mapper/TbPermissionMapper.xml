@@ -4,15 +4,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbPermissionMapper">
 
-    <resultMap id="BaseResultMap" type="com.chenjx.office.api.entity.TbPermission">
-            <id property="id" column="id" jdbcType="OTHER"/>
-            <result property="permissionName" column="permission_name" jdbcType="VARCHAR"/>
-            <result property="moduleId" column="module_id" jdbcType="OTHER"/>
-            <result property="actionId" column="action_id" jdbcType="OTHER"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        id,permission_name,module_id,
-        action_id
-    </sql>
 </mapper>

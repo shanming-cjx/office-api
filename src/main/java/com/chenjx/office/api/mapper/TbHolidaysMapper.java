@@ -1,7 +1,6 @@
 package com.chenjx.office.api.mapper;
 
-import com.chenjx.office.api.entity.TbHolidays;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author chenjx
@@ -9,7 +8,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-08-12 17:03:42
 * @Entity com.chenjx.office.api.entity.TbHolidays
 */
-public interface TbHolidaysMapper extends BaseMapper<TbHolidays> {
+@Mapper
+public interface TbHolidaysMapper {
 
 }
 

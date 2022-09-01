@@ -3,15 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbDeptMapper">
-
-    <resultMap id="BaseResultMap" type="com.chenjx.office.api.entity.TbDept">
-            <id property="id" column="id" jdbcType="OTHER"/>
-            <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
-            <result property="tel" column="tel" jdbcType="VARCHAR"/>
-            <result property="email" column="email" jdbcType="VARCHAR"/>
-            <result property="desc" column="desc" jdbcType="VARCHAR"/>
-    </resultMap>
-
     <select id="searchAllDept" resultType="java.util.HashMap">
         SELECT id,
                dept_name AS deptName

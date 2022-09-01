@@ -82,16 +82,16 @@ sa-token:
 #  app-id: 你自己微信小程序APPID
 #  app-secret: 你自己微信小程序密钥
 
-#mybatis:
-#  mapper-locations: classpath*:mapper/*.xml
-#  type-aliases-package: com.example.emos.wx.db.pojo
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    map-underscore-to-camel-case: true
-#
-#logging:
-#  level:
-#    root: info
-#    com.example.emos.wx.db.dao: warn
-#  pattern:
-#    console: "%d{yyyy/MM/dd HH:mm:ss}  %-5level  %msg%n"
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.chenjx.office.api.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: info
+    com.chenjx.office.api.mapper: warn
+  pattern:
+    console: "%d{yyyy/MM/dd HH:mm:ss}  %-5level  %msg%n"
