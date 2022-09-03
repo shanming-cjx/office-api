@@ -1,8 +1,8 @@
 package com.chenjx.office.api.filter;
 
-import com.chenjx.office.api.entity.security.LoginUser;
-import com.chenjx.office.api.common.util.JwtUtil;
 import com.chenjx.office.api.common.redis.RedisCache;
+import com.chenjx.office.api.common.util.JwtUtil;
+import com.chenjx.office.api.entity.security.LoginUser;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,7 +51,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String redisKey = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
         if(Objects.isNull(loginUser)){
-            throw new RuntimeException("用户未登录");
+            throw new RuntimeException("token过期");
         }
         //存入SecurityContextHolder
         //获取权限信息封装到Authentication中

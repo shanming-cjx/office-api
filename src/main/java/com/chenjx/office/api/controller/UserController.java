@@ -107,7 +107,7 @@ public class UserController {
 
     @PostMapping("/searchById")
     @Operation(summary = "根据ID查找用户")
-    @PreAuthorize("hasAnyAuthority('ROOT','USER:SELECT')")//仅ROOT或SELECT权限可访问
+    @PreAuthorize("hasAnyAuthority('testqw')")//仅ROOT或SELECT权限可访问
     public Resp searchUserById(@Valid @RequestBody SearchUserByIdRequest req) {
         HashMap map = userService.searchUserById(req.getUserId());
         return Resp.ok(map);

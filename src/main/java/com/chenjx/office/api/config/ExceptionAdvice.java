@@ -19,7 +19,7 @@ public class ExceptionAdvice {
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Resp exceptionHandler(Exception e) {
+    public Resp exceptionHandler(Exception e) throws Exception {
         String msg = "";
         int code = 200;
         //处理后端验证失败产生的异常
@@ -36,16 +36,18 @@ public class ExceptionAdvice {
         }
         //处理Security的权限异常
         else if(e instanceof AccessDeniedException){
-            log.error("访问的权限不足", e);
+//            log.error("访问的权限不足", e);
 //            msg = "访问权限不足";
-            msg = e.getMessage();
-            code = 403;
+//            msg = e.getMessage();
+//            code = 403;
+            throw e;
         }
         //处理Security的登录异常
         else if(e instanceof AuthenticationException){
-            log.error("用户登录认证失败", e);
-            msg = e.getMessage();
-            code = 401;
+//            log.error("用户登录认证失败", e);
+//            msg = e.getMessage();
+//            code = 401;
+            throw e;
         }
         //处理其余的异常
         else {
