@@ -1,25 +1,24 @@
 package com.chenjx.office.api.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.annotation.SaMode;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
+import com.chenjx.office.api.common.redis.RedisCache;
+import com.chenjx.office.api.common.util.JwtUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
 import com.chenjx.office.api.controller.request.*;
 import com.chenjx.office.api.entity.TbUser;
+import com.chenjx.office.api.entity.security.LoginUser;
 import com.chenjx.office.api.service.TbUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
@@ -28,47 +27,47 @@ public class UserController {
 
     @Resource
     TbUserService userService;
+    @Resource
+    private RedisCache redisCache;
 
     @PostMapping("/login")
     @Operation(summary = "登录校验")
     public Resp login(@Valid @RequestBody LoginRequest req) {
         HashMap requestParam = JSONUtil.parse(req).toBean(HashMap.class);
-        Integer userId = userService.login(requestParam);
-        Resp response = Resp.ok().put("result", userId != null);//userId不为空：result=true || 为空 result=false
-        if (userId != null) {
-            StpUtil.setLoginId(userId);//sa-token传入用户id登录
-            Set<String> permissions = userService.searchUserPermissionsByUserId(userId);//封装用户（多个）权限成Set集合
-            String token = StpUtil.getTokenInfo().getTokenValue();//获取登录用户的token
-            response.put("permissions", permissions).put("token", token);
-        }
+        LoginUser loginUser = userService.login(requestParam);
+        String userId = loginUser.getUser().getId().toString();//获取userId
+        String jwt = JwtUtil.createJWT(userId);//生成token
+        //authenticate存入redis
+        redisCache.setCacheObject("login:"+userId,loginUser);//"login:"+userId作为key，用户的信息作为value
+        Resp response = Resp.ok().put("result", true).put("token",jwt).put("permissions",loginUser.getPermissions());
         return response;
-
     }
 
     @GetMapping("/logout")
-    @SaCheckLogin//仅登录后访问
     @Operation(summary = "登出")
     public Resp Logout() {
-        StpUtil.logout();//删除Redis的token
-        return Resp.ok();
+        LoginUser loginUser = userService.getUserByAuthentication();
+        Integer userid = loginUser.getUser().getId();
+        String message = redisCache.deleteObject("login:"+userid) ? "登出成功" : "登出失败";
+        return Resp.ok().put("msg",message);
     }
 
     @PostMapping("/updatePassword")
-    @SaCheckLogin//仅登录后访问
     @Operation(summary = "修改密码")
     public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {
-        int userId = StpUtil.getLoginIdAsInt();//将token里的userId提取出来
+        LoginUser loginUser = userService.getUserByAuthentication();
+        Integer userId = loginUser.getUser().getId();
         HashMap map = new HashMap() {{//将查询条件userId和要修改的密码封装到参数map
             put("userId", userId);
             put("password", req.getPassword());
         }};
         int updateRows = userService.updatePasswordByUserId(map);
-        StpUtil.logout();//删除Redis的token
-        return Resp.ok().put("rows", updateRows);
+        boolean result = redisCache.deleteObject("login:"+userId);
+        return Resp.ok().put("result",result).put("rows", updateRows);
     }
 
     @PostMapping("/searchUserByPage")
-    @SaCheckPermission(value = {"ROOT", "USER:SELECT"}, mode = SaMode.OR)//仅管理员和拥有查询权限的用户可以访问
+    @PreAuthorize("hasAnyAuthority('ROOT','USER:SELECT')")//仅管理员和拥有查询权限的用户可以访问
     @Operation(summary = "用户多条件分页查询")
     public Resp searchUserByPage(@Valid @RequestBody SearchUserByPageRequest req) {
         int page = req.getPage();
@@ -81,7 +80,7 @@ public class UserController {
     }
 
     @PostMapping("/insert")
-    @SaCheckPermission(value = {"ROOT", "USER:INSERT"}, mode = SaMode.OR)//仅ROOT或INSERT权限可访问
+    @PreAuthorize("hasAnyAuthority('ROOT','USER:INSERT')")//仅ROOT或INSERT权限可访问
     @Operation(summary = "添加用户")
     public Resp insertUser(@Valid @RequestBody InsertUserRequest req) {
         TbUser user = JSONUtil.parse(req).toBean(TbUser.class);
@@ -93,7 +92,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    @SaCheckPermission(value = {"ROOT", "USER:UPDATE"}, mode = SaMode.OR)
+    @PreAuthorize("hasAnyAuthority('ROOT','USER:UPDATE')")//仅ROOT或UPDATE权限可访问
     @Operation(summary = "修改用户")
     public Resp update(@Valid @RequestBody UpdateUserRequest req) {
         HashMap param = JSONUtil.parse(req).toBean(HashMap.class);
@@ -101,24 +100,25 @@ public class UserController {
         int rows = userService.updateUser(param);
         if (rows == 1) {
             //修改资料后，把该用户踢下线
-            StpUtil.logoutByLoginId(req.getUserId());
+            redisCache.deleteObject("login:" + req.getUserId());
         }
         return Resp.ok().put("rows", rows);
     }
 
     @PostMapping("/searchById")
     @Operation(summary = "根据ID查找用户")
-    @SaCheckPermission(value = {"ROOT", "USER:SELECT"}, mode = SaMode.OR)
+    @PreAuthorize("hasAnyAuthority('ROOT','USER:SELECT')")//仅ROOT或SELECT权限可访问
     public Resp searchUserById(@Valid @RequestBody SearchUserByIdRequest req) {
         HashMap map = userService.searchUserById(req.getUserId());
         return Resp.ok(map);
     }
 
     @PostMapping("/deleteUserByIds")
-    @SaCheckPermission(value = {"ROOT", "USER:DELETE"}, mode = SaMode.OR)
+    @PreAuthorize("hasAnyAuthority('ROOT','USER:DELETE')")//仅ROOT或DELETE权限可访问
     @Operation(summary = "删除用户")
     public Resp deleteUserByIds(@Valid @RequestBody DeleteUserByIdsRequest req) {
-        Integer userId = StpUtil.getLoginIdAsInt();
+        LoginUser loginUser = userService.getUserByAuthentication();
+        Integer userId = loginUser.getUser().getId();
         if (ArrayUtil.contains(req.getIds(), userId)) {
             return Resp.error("您是管理员，不能删除自己的帐户");
         }
@@ -126,7 +126,7 @@ public class UserController {
         if (rows > 0) {
             //把被删除的用户踢下线
             for (Integer id : req.getIds()) {
-                StpUtil.logoutByLoginId(id);
+                redisCache.deleteObject("login:" + userId);
             }
         }
         return Resp.ok().put("rows", rows);

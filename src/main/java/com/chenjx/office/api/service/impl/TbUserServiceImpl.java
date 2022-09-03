@@ -2,8 +2,13 @@ package com.chenjx.office.api.service.impl;
 
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.entity.TbUser;
+import com.chenjx.office.api.entity.security.LoginUser;
 import com.chenjx.office.api.mapper.TbUserMapper;
 import com.chenjx.office.api.service.TbUserService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,11 +26,18 @@ public class TbUserServiceImpl implements TbUserService {
 
     @Resource
     TbUserMapper userMapper;
+    @Resource
+    private AuthenticationManager authenticationManager;
+
 
     @Override
-    public Integer login(HashMap map) {//登录校验
-        Integer userId = userMapper.login(map);
-        return userId;
+    public LoginUser login(HashMap map) {//登录校验
+        UsernamePasswordAuthenticationToken authenticationToken  = new UsernamePasswordAuthenticationToken(map.get("userName"),map.get("password"));
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+//        if(Objects.isNull(authenticate)){//不会触发，由于登录验证失败时Security的过滤链中会抛出异常，直接进行异常处理；这里是为了便于后期维护阅读
+//            throw new RuntimeException("用户名或密码错误");
+//        }
+        return (LoginUser) authenticate.getPrincipal();
     }
 
     public Set<String> searchUserPermissionsByUserId(int userId) {//根据userId查用户权限
@@ -70,6 +82,13 @@ public class TbUserServiceImpl implements TbUserService {
         int rows = userMapper.deleteUserByIds(ids);
         return rows;
 
+    }
+
+    @Override
+    public LoginUser getUserByAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();//从SecurityContextHolder中获取authentication
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();//再从authentication中获取之前从数据库（mysql或redis）封入的对象loginUser
+        return loginUser;
     }
 
 }

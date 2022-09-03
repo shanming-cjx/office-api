@@ -14,25 +14,30 @@ import java.util.Set;
  * @Entity com.chenjx.office.api.entity.TbUser
  */
 @Mapper
-public interface TbUserMapper {
+public interface TbUserMapper {//TODO 密码加密解密改装
 
+    //根据userId查用户权限
     Set<String> searchUserPermissions(int userId);
-
+    //登录校验
     Integer login(HashMap map);
-
+    //根据userId修改密码
     int updatePassword(HashMap map);
-
+    //多条件分页查询用户信息
     ArrayList<HashMap> searchUserByPage(HashMap map);
-
+    //多条件分页查询用户信息的总条数
     long searchUserCount(HashMap map);
-
+    //新增用户
     int insertUser(TbUser newUser);
-
+    //修改用户信息
     int updateUser(HashMap map);
-
+    //根据用户id查用户信息
     HashMap searchUserById(int id);
-
+    //根据用户名查用户信息
+    TbUser searchUserByUserName(String userName);
+    //根据用户id删除用户
     int deleteUserByIds(Integer[] ids);
+
+
 
 }
 

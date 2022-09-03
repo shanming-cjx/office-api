@@ -180,4 +180,10 @@
         AND root=FALSE
     </delete>
 
+    <select id="searchUserByUserName" parameterType="String" resultType="com.chenjx.office.api.entity.TbUser">
+        SELECT *
+        FROM tb_user
+        WHERE username = #{userName}
+    </select>
+
 </mapper>

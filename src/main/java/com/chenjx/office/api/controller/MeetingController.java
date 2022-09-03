@@ -1,11 +1,10 @@
 package com.chenjx.office.api.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.stp.StpUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
 import com.chenjx.office.api.controller.request.SearchOfflineMeetingByPageRequest;
 import com.chenjx.office.api.service.TbMeetingService;
+import com.chenjx.office.api.service.TbUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +25,11 @@ public class MeetingController {
 
     @Resource
     TbMeetingService meetingService;
+    @Resource
+    TbUserService userService;
 
     @PostMapping("/searchOfflineMeetingByPage")
     @Operation(summary = "查询线下会议的分页数据")
-    @SaCheckLogin
     public Resp searchOfflineMeetingByPage(@Valid @RequestBody SearchOfflineMeetingByPageRequest req) {
         int page = req.getPage();
         int length = req.getLength();
@@ -37,7 +37,7 @@ public class MeetingController {
         HashMap param = new HashMap() {{
             put("date", req.getDate());
             put("mold", req.getMold());
-            put("userId", StpUtil.getLoginId());
+            put("userId", userService.getUserByAuthentication().getUser().getId());
             put("start", start);
             put("length", length);
         }};

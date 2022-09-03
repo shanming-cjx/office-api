@@ -36,8 +36,9 @@ public class Resp extends HashMap<String, Object> {
 
     public static Resp error(int code, String msg) {
         Resp resp = new Resp();
+        resp.remove("msg");
         resp.put("code", code);
-        resp.put("msg", msg);
+        resp.put("error", msg);
         return resp;
     }
 

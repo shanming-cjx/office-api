@@ -2,7 +2,9 @@ package com.chenjx.office.api.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
+/**
+ * 自定义异常
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OfficeException extends RuntimeException {
