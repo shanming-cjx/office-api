@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
-                .antMatchers("/user/login").anonymous()//仅匿名可访问，携带token不能访问
+//                .antMatchers("/user/login").anonymous()//仅匿名可访问，携带token不能访问
+                .antMatchers("/user/login").permitAll()//无论是否携带token都可访问，这是为了防止携带过期token而无法登录的情况。
                 .antMatchers("/swagger-ui/**",
 //                        "/swagger-ui/index.html",
                         "/swagger-ui.html",

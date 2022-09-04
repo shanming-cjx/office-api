@@ -54,7 +54,7 @@ public class UserController {
 
     @PostMapping("/updatePassword")
     @Operation(summary = "修改密码")
-    public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {
+    public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {//TODO 没有原密码的验证，加原密码（前后端）
         LoginUser loginUser = userService.getUserByAuthentication();
         Integer userId = loginUser.getUser().getId();
         HashMap map = new HashMap() {{//将查询条件userId和要修改的密码封装到参数map

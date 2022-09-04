@@ -22,6 +22,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         if (authException instanceof BadCredentialsException)//输出UsernameNotFoundException手动抛出的异常信息
             msg = authException.getMessage();
         Resp result = Resp.error(HttpStatus.UNAUTHORIZED.value(), msg);
+        result.put("result",false);
         String json = JSON.toJSONString(result);
         //处理异常
         WebUtils.renderString(response,json);

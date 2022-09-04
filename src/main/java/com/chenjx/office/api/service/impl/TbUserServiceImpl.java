@@ -93,7 +93,7 @@ public class TbUserServiceImpl implements TbUserService {
     }
 
     @Override
-    public LoginUser getUserByAuthentication() {
+    public LoginUser getUserByAuthentication() {//通过authentication获取封装了用户信息的LoginUser对象
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();//从SecurityContextHolder中获取authentication
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();//再从authentication中获取之前从数据库（mysql或redis）封入的对象loginUser
         return loginUser;
