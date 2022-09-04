@@ -24,8 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         TbUser user = userMapper.searchUserByUserName(username);
         //如果查询不到数据就通过抛出异常来给出提示
         if(Objects.isNull(user)){
-//            throw new RuntimeException("用户名或密码错误");
-            throw new UsernameNotFoundException("用户名或密码错误");
+            throw new UsernameNotFoundException("用户名错误");
         }
         //根据用户查询权限信息 添加到LoginUser中
         Set<String> set = userMapper.searchUserPermissions(user.getId());

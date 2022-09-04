@@ -9,11 +9,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -28,6 +30,8 @@ public class TbUserServiceImpl implements TbUserService {
     TbUserMapper userMapper;
     @Resource
     private AuthenticationManager authenticationManager;
+    @Resource
+    private PasswordEncoder bCryptEncoder;
 
 
     @Override
@@ -47,6 +51,7 @@ public class TbUserServiceImpl implements TbUserService {
 
     @Override
     public int updatePasswordByUserId(HashMap map) {//根据userId修改密码
+        map.replace("password",bCryptEncoder.encode(map.get("password").toString()));//密码加密
         int updatedRows = userMapper.updatePassword(map);
         return updatedRows;
     }
@@ -62,12 +67,15 @@ public class TbUserServiceImpl implements TbUserService {
 
     @Override
     public int insertUser(TbUser user) {//新增用户
+        user.setPassword(bCryptEncoder.encode(user.getPassword()));//密码加密
         int insertedRows = userMapper.insertUser(user);
         return insertedRows;
     }
 
     @Override
     public int updateUser(HashMap user) {//修改用户信息
+        if(Objects.isNull(user.get("password")))
+            user.replace("password",bCryptEncoder.encode(user.get("password").toString()));//密码加密
         int updatedRows = userMapper.updateUser(user);
         return updatedRows;
     }
