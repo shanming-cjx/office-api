@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbMeetingMapper">
+
     <select id="searchOfflineMeetingByPage" parameterType="HashMap" resultType="HashMap">
         SELECT mr.name, temp.meeting FROM tb_meeting_room mr
         LEFT JOIN  (
@@ -34,5 +35,39 @@
         SELECT COUNT(*)
         FROM tb_meeting_room
         WHERE status=1
+    </select>
+
+    <update id="updateMeetingInstanceId" parameterType="HashMap">
+        UPDATE tb_meeting
+        SET instance_id=#{instanceId}
+        WHERE uuid=#{uuid}
+    </update>
+
+    <insert id="insert" parameterType="com.chenjx.office.api.entity.TbMeeting">
+        INSERT INTO tb_meeting
+        SET title = #{title},
+        <if test="uuid!=null">
+            uuid = #{uuid},
+        </if>
+        `date` = #{date},
+        creator_id = #{creatorId},
+        <if test="place!=null">
+            place = #{place},
+        </if>
+        `start` = #{start},
+        `end` = #{end},
+        `type` = #{type},
+        members = #{members},
+        `desc` = #{desc},
+        instance_id = #{instanceId},
+        status = #{status},
+        create_time = NOW()
+    </insert>
+
+    <select id="searchMeetingMembersInSameDept" parameterType="String" resultType="boolean">
+        SELECT IF(COUNT(DISTINCT u.dept_id)=1,TRUE,FALSE ) AS bool
+        FROM tb_meeting m
+                 JOIN tb_user u ON JSON_CONTAINS ( m.members, CAST( u.id AS CHAR ) )
+        WHERE m.uuid=#{uuid} AND u.status = 1
     </select>
 </mapper>

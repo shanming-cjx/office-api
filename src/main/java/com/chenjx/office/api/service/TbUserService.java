@@ -38,6 +38,5 @@ public interface TbUserService {
     int deleteUserByIds(Integer[] ids);
 
     //从SecurityContextHolder中获取authentication中的用户信息
-    LoginUser getUserByAuthentication();
-
+    LoginUser getLoginUserByAuthentication();
 }

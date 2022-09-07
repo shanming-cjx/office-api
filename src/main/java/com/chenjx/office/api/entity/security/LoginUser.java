@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- *Spring Security登录验证所需的用户信息，改为从数据库查询
+ * Spring Security登录验证所需的用户信息，改为从数据库查询
  */
 
 
@@ -26,18 +26,20 @@ public class LoginUser implements UserDetails {
     //存储SpringSecurity所需要的权限信息的集合
 //    @JSONField(serialize = false)
     private Set<GrantedAuthority> authorities;
+    private Set<String> roles;
 
-    public LoginUser(TbUser user, Set<String> permissions) {
+    public LoginUser(TbUser user, Set<String> permissions, Set<String> roles) {
         this.user = user;
         this.permissions = permissions;
+        this.roles = roles;
         this.getAuthorities();
     }
 
-    public LoginUser(TbUser user, Set<String> permissions, Set<GrantedAuthority> authorities) {
-        this.user = user;
-        this.permissions = permissions;
-        this.authorities = authorities;
-    }
+//    public LoginUser(TbUser user, Set<String> permissions, Set<GrantedAuthority> authorities) {
+//        this.user = user;
+//        this.permissions = permissions;
+//        this.authorities = authorities;
+//    }
 
 
     @Override

@@ -1,6 +1,7 @@
 package com.chenjx.office.api.service;
 
 import com.chenjx.office.api.common.util.PageUtils;
+import com.chenjx.office.api.entity.TbMeeting;
 
 import java.util.HashMap;
 
@@ -11,5 +12,7 @@ import java.util.HashMap;
  */
 public interface TbMeetingService {
     //多条件分页查询所有线下会议
-    public PageUtils searchOfflineMeetingByPage(HashMap param);
+    PageUtils searchOfflineMeetingByPage(HashMap param);
+    //新增线下会议申请
+    int insert(TbMeeting meeting);
 }

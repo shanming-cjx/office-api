@@ -14,10 +14,16 @@ import java.util.Set;
  * @Entity com.chenjx.office.api.entity.TbUser
  */
 @Mapper
-public interface TbUserMapper {//TODO 密码加密解密改装
+public interface TbUserMapper {
 
 
     Set<String> searchUserPermissions(int userId);//根据userId查用户权限
+
+    Set<String> searchUserRoles(int userId);//根据userId查用户角色
+
+    String searchDeptManagerUserName(int userId);//根据userId查用户的部门经理username
+
+    String searchGmUserName();//查询总经理的username
 
 //    Integer login(HashMap map);//登录校验
 

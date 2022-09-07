@@ -11,6 +11,27 @@
         WHERE u.id=#{userId} AND u.status=1;
     </select>
 
+    <select id="searchUserRoles" parameterType="int" resultType="java.lang.String" >
+        SELECT DISTINCT r.role_name
+        FROM tb_user u
+        JOIN tb_role r ON JSON_CONTAINS(u.role,CAST(r.id AS CHAR))
+        WHERE u.id = #{userId}
+    </select>
+
+    <select id="searchDeptManagerUserName" parameterType="int" resultType="java.lang.String">
+        SELECT u2.username
+        FROM tb_user u1
+                 JOIN tb_user u2
+                 ON u1.dept_id = u2.dept_id AND  JSON_CONTAINS(u2.role, CAST(2 AS CHAR)) AND u2.status = 1
+        WHERE u1.id = #{userId}
+    </select>
+
+    <select id="searchGmUserName" resultType="java.lang.String">
+        SELECT username
+        FROM tb_user
+        WHERE JSON_CONTAINS(role,CAST(1 AS CHAR )) AND status = 1
+    </select>
+
 <!--    <select id="login" parameterType="HashMap" resultType="Integer">
         SELECT id
         FROM tb_user
@@ -184,5 +205,7 @@
         FROM tb_user
         WHERE username = #{userName}
     </select>
+
+
 
 </mapper>

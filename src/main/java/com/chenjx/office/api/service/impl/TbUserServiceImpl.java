@@ -33,7 +33,6 @@ public class TbUserServiceImpl implements TbUserService {
     @Resource
     private PasswordEncoder bCryptEncoder;
 
-
     @Override
     public LoginUser login(HashMap map) {//登录校验
         UsernamePasswordAuthenticationToken authenticationToken  = new UsernamePasswordAuthenticationToken(map.get("userName"),map.get("password"));
@@ -89,16 +88,14 @@ public class TbUserServiceImpl implements TbUserService {
     public int deleteUserByIds(Integer[] ids) {//删除非管理员用户
         int rows = userMapper.deleteUserByIds(ids);
         return rows;
-
     }
 
     @Override
-    public LoginUser getUserByAuthentication() {//通过authentication获取封装了用户信息的LoginUser对象
+    public LoginUser getLoginUserByAuthentication() {//从security过滤链中获取用户信息，而security除了登录是从Mysql里获取用户信息，其余每次前端请求都是从redis中获取
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();//从SecurityContextHolder中获取authentication
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();//再从authentication中获取之前从数据库（mysql或redis）封入的对象loginUser
         return loginUser;
     }
-
 }
 
 

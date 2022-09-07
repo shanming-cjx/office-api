@@ -27,9 +27,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名错误");
         }
         //根据用户查询权限信息 添加到LoginUser中
-        Set<String> set = userMapper.searchUserPermissions(user.getId());
-        set.add("ROLE_ACTIVITI_USER");//activiti7所需的权限
+        Set<String> permissions = userMapper.searchUserPermissions(user.getId());
+        permissions.add("ROLE_ACTIVITI_USER");//activiti7所需的权限
+        Set<String> roles = userMapper.searchUserRoles(user.getId());
         //封装成UserDetails对象返回 
-        return new LoginUser(user,set);
+        return new LoginUser(user,permissions,roles);
     }
 }

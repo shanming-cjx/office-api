@@ -46,7 +46,7 @@ public class UserController {
     @GetMapping("/logout")
     @Operation(summary = "登出")
     public Resp Logout() {
-        LoginUser loginUser = userService.getUserByAuthentication();
+        LoginUser loginUser = userService.getLoginUserByAuthentication();
         Integer userid = loginUser.getUser().getId();
         String message = redisCache.deleteObject("login:"+userid) ? "登出成功" : "登出失败";
         return Resp.ok().put("msg",message);
@@ -55,7 +55,7 @@ public class UserController {
     @PostMapping("/updatePassword")
     @Operation(summary = "修改密码")
     public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {//TODO 没有原密码的验证，加原密码（前后端）
-        LoginUser loginUser = userService.getUserByAuthentication();
+        LoginUser loginUser = userService.getLoginUserByAuthentication();
         Integer userId = loginUser.getUser().getId();
         HashMap map = new HashMap() {{//将查询条件userId和要修改的密码封装到参数map
             put("userId", userId);
@@ -117,7 +117,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROOT','USER:DELETE')")//仅ROOT或DELETE权限可访问
     @Operation(summary = "删除用户")
     public Resp deleteUserByIds(@Valid @RequestBody DeleteUserByIdsRequest req) {
-        LoginUser loginUser = userService.getUserByAuthentication();
+        LoginUser loginUser = userService.getLoginUserByAuthentication();
         Integer userId = loginUser.getUser().getId();
         if (ArrayUtil.contains(req.getIds(), userId)) {
             return Resp.error("您是管理员，不能删除自己的帐户");
