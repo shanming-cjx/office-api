@@ -4,4 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenjx.office.api.mapper.TbMeetingRoomMapper">
 
+    <select id="searchAllMeetingRoom" resultType="java.util.HashMap">
+        SELECT id,
+               `name`
+        FROM tb_meeting_room
+        WHERE status = 1
+    </select>
+    <select id="searchFreeMeetingRoom" parameterType="HashMap" resultType="String">
+        SELECT temp.name
+        FROM (
+                 SELECT mr.`name`, m.id
+                 FROM tb_meeting_room mr
+                          LEFT JOIN tb_meeting m ON mr.`name` = m.place
+                     AND m.date = #{date}
+                     AND (
+                            (#{start} &gt;= m.`start` AND #{start}  &lt; m.`end` ) OR
+                            (#{end} &gt; m.`start` AND #{end} &lt;= m.`end` ) OR
+                            (m.`start` &gt;= #{start} AND m.`start` &lt; #{end}) OR
+                            (m.`end` &gt; #{start} AND m.`end` &lt;= #{end} )
+                         )
+             ) temp
+        WHERE temp.id IS NULL
+    </select>
 </mapper>

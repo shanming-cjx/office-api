@@ -205,7 +205,11 @@
         FROM tb_user
         WHERE username = #{userName}
     </select>
-
+    <select id="searchAllUser" resultType="java.util.HashMap">
+        SELECT id,`name`
+        FROM tb_user
+        WHERE status = 1
+    </select>
 
 
 </mapper>

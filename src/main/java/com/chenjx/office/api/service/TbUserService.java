@@ -4,6 +4,7 @@ import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.entity.TbUser;
 import com.chenjx.office.api.entity.security.LoginUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -39,4 +40,7 @@ public interface TbUserService {
 
     //从SecurityContextHolder中获取authentication中的用户信息
     LoginUser getLoginUserByAuthentication();
+
+    //查询所有用户
+    ArrayList<HashMap> searchAllUser();
 }

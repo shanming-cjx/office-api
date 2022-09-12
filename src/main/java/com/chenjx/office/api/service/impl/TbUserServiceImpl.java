@@ -96,6 +96,12 @@ public class TbUserServiceImpl implements TbUserService {
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();//再从authentication中获取之前从数据库（mysql或redis）封入的对象loginUser
         return loginUser;
     }
+
+    @Override
+    public ArrayList<HashMap> searchAllUser() {
+        ArrayList<HashMap> list = userMapper.searchAllUser();
+        return list;
+    }
 }
 
 

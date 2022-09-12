@@ -16,35 +16,46 @@ import java.util.Set;
 @Mapper
 public interface TbUserMapper {
 
+    //根据userId查用户权限
+    Set<String> searchUserPermissions(int userId);
 
-    Set<String> searchUserPermissions(int userId);//根据userId查用户权限
+    //根据userId查用户角色
+    Set<String> searchUserRoles(int userId);
 
-    Set<String> searchUserRoles(int userId);//根据userId查用户角色
+    //根据userId查用户的部门经理username
+    String searchDeptManagerUserName(int userId);
 
-    String searchDeptManagerUserName(int userId);//根据userId查用户的部门经理username
+    //查询总经理的username
+    String searchGmUserName();
 
-    String searchGmUserName();//查询总经理的username
+    //登录校验
+//    Integer login(HashMap map);
+    //根据userId修改密码
+    int updatePassword(HashMap map);
 
-//    Integer login(HashMap map);//登录校验
+    //多条件分页查询用户信息
+    ArrayList<HashMap> searchUserByPage(HashMap map);
 
-    int updatePassword(HashMap map);//根据userId修改密码
+    //多条件分页查询用户信息的总条数
+    long searchUserCount(HashMap map);
 
-    ArrayList<HashMap> searchUserByPage(HashMap map);//多条件分页查询用户信息
+    //新增用户
+    int insertUser(TbUser newUser);
 
-    long searchUserCount(HashMap map);//多条件分页查询用户信息的总条数
+    //修改用户信息
+    int updateUser(HashMap map);
 
-    int insertUser(TbUser newUser);//新增用户
+    //根据用户id查用户信息
+    HashMap searchUserById(int id);
 
-    int updateUser(HashMap map);//修改用户信息
+    //根据用户名查用户信息
+    TbUser searchUserByUserName(String userName);
 
-    HashMap searchUserById(int id);//根据用户id查用户信息
+    //根据用户id删除用户
+    int deleteUserByIds(Integer[] ids);
 
-    TbUser searchUserByUserName(String userName);//根据用户名查用户信息
-
-    int deleteUserByIds(Integer[] ids);//根据用户id删除用户
-
-
-
+    //查询所有在职用户
+    ArrayList<HashMap> searchAllUser();
 }
 
 

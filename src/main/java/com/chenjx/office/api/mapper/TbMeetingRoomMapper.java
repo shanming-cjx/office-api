@@ -2,6 +2,9 @@ package com.chenjx.office.api.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * @author chenjx
  * @description 针对表【tb_meeting_room(会议室表)】的数据库操作Mapper
@@ -11,6 +14,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface TbMeetingRoomMapper {
 
+    ArrayList<HashMap> searchAllMeetingRoom();
+
+    ArrayList<String> searchFreeMeetingRoom(HashMap param);
 }
 
 
