@@ -1,5 +1,9 @@
 package com.chenjx.office.api.service.impl;
 
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.entity.TbMeeting;
@@ -106,6 +110,41 @@ public class TbMeetingServiceImpl implements TbMeetingService {
             map = meetingMapper.searchMeetingInfo(id);
         }
         return map;
+    }
+
+    @Override
+    public int deleteMeetingApplication(HashMap map) {
+//        Long id = MapUtil.getLong(map, "id");
+//        String uuid = MapUtil.getStr(map, "uuid");
+        String instanceId = MapUtil.getStr(map, "instanceId");
+        //查询会议详情，判断是否距离会议开始不足20分钟
+        HashMap meeting = meetingMapper.searchMeetingById(map);
+        String date = MapUtil.getStr(meeting, "date");
+        String start = MapUtil.getStr(meeting, "start");
+        int status = MapUtil.getInt(meeting, "status");
+        boolean isCreator = Boolean.parseBoolean(MapUtil.getStr(meeting, "isCreator"));
+        DateTime dateTime = DateUtil.parse(date + " " + start);
+        DateTime now = DateUtil.date();
+        if (now.isAfterOrEquals(dateTime.offset(DateField.MINUTE, -20))) {
+            throw new OfficeException("距离会议开始不足20分钟，不能删除会议");
+        }
+        //只能申请人删除该会议
+        if (!isCreator) {
+            throw new OfficeException("只能申请人删除该会议");
+        }
+        //待审批和未开始的会议可以删除
+        if (status == 1 || status == 3) {
+            int rows = meetingMapper.deleteMeetingApplication(map);
+            if (rows == 1) {
+                String reason = MapUtil.getStr(map, "reason");
+                //TODO Activiti7删除流程实例是否会删除历史记录。
+                //meetingWorkflowTask.deleteMeetingApplication(uuid, instanceId, reason);
+                workFlowService.deleteInstance(instanceId,reason);
+            }
+            return rows;
+        } else {
+            throw new OfficeException("只能删除待审批和未开始的会议");
+        }
     }
 }
 

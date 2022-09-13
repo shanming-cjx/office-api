@@ -45,6 +45,9 @@ public interface TbUserMapper {
     //修改用户信息
     int updateUser(HashMap map);
 
+    //根据用户id查询用户基本信息，用于前端布局的顶部栏
+    HashMap searchUserSummary(int userId);
+
     //根据用户id查用户信息
     HashMap searchUserById(int id);
 

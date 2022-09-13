@@ -82,4 +82,16 @@ public class WorkFlowServiceImpl implements WorkFlowService {
         return processInstancePage;
     }
 
+    @Override
+    public boolean deleteInstance(String instanceId, String reason) {
+        ProcessInstance processInstance = processRuntime.delete(ProcessPayloadBuilder
+                .delete()
+                .withProcessInstanceId(instanceId)
+                .withReason(reason)
+                .build()
+        );
+        return true;
+    }
+
+
 }

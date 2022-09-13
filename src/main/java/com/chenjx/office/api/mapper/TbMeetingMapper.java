@@ -30,6 +30,9 @@ public interface TbMeetingMapper {
 
     HashMap searchCurrentMeetingInfo(long id);//查询当前会议的详细信息（包含出席和缺席）
 
+    int deleteMeetingApplication(HashMap map);//删除会议业务数据
+
+    HashMap searchMeetingById(HashMap map);
 }
 
 

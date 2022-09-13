@@ -9,10 +9,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.common.util.Resp;
-import com.chenjx.office.api.controller.request.InsertMeetingRequest;
-import com.chenjx.office.api.controller.request.SearchMeetingInfoRequest;
-import com.chenjx.office.api.controller.request.SearchOfflineMeetingByPageRequest;
-import com.chenjx.office.api.controller.request.SearchOfflineMeetingInWeekRequest;
+import com.chenjx.office.api.controller.request.*;
 import com.chenjx.office.api.entity.TbMeeting;
 import com.chenjx.office.api.service.TbMeetingService;
 import com.chenjx.office.api.service.TbUserService;
@@ -84,30 +81,30 @@ public class MeetingController {
         DateTime startDate, endDate;
         //判断是否有选择从那天开始查询周日历
         if (date != null && date.length() > 0) {
-            startDate=DateUtil.parseDate(date);
-            endDate=startDate.offsetNew(DateField.DAY_OF_WEEK,6);
-        }else{//否则以现在的时间所在的周为查询范围
-            startDate=DateUtil.beginOfWeek(new Date());
-            endDate=DateUtil.endOfWeek(new Date());
+            startDate = DateUtil.parseDate(date);
+            endDate = startDate.offsetNew(DateField.DAY_OF_WEEK, 6);
+        } else {//否则以现在的时间所在的周为查询范围
+            startDate = DateUtil.beginOfWeek(new Date());
+            endDate = DateUtil.endOfWeek(new Date());
         }
         HashMap param = new HashMap() {{
             put("place", req.getName());
             put("startDate", startDate.toDateStr());
             put("endDate", endDate.toDateStr());
             put("mold", req.getMold());
-            put("userId", (long)userService.getLoginUserByAuthentication().getUser().getId());
+            put("userId", (long) userService.getLoginUserByAuthentication().getUser().getId());
         }};
-        ArrayList<HashMap> list=meetingService.searchOfflineMeetingInWeek(param);
-        ArrayList days=new ArrayList();
+        ArrayList<HashMap> list = meetingService.searchOfflineMeetingInWeek(param);
+        ArrayList days = new ArrayList();
         //利用hutool工具类创建周信息
-        DateRange range=DateUtil.range(startDate,endDate, DateField.DAY_OF_WEEK);
-        range.forEach(one->{
-            JSONObject json=new JSONObject();
-            json.set("date",one.toString("MM/dd"));
-            json.set("day",one.dayOfWeekEnum().toChinese("周"));
+        DateRange range = DateUtil.range(startDate, endDate, DateField.DAY_OF_WEEK);
+        range.forEach(one -> {
+            JSONObject json = new JSONObject();
+            json.set("date", one.toString("MM/dd"));
+            json.set("day", one.dayOfWeekEnum().toChinese("周"));
             days.add(json);
         });
-        return Resp.ok().put("list",list).put("days",days);
+        return Resp.ok().put("list", list).put("days", days);
     }
 
     @PostMapping("/searchMeetingInfo")
@@ -115,5 +112,14 @@ public class MeetingController {
     public Resp searchMeetingInfo(@Valid @RequestBody SearchMeetingInfoRequest req) {
         HashMap map = meetingService.searchMeetingInfo(req.getStatus(), req.getId());
         return Resp.ok(map);
+    }
+
+    @PostMapping("/deleteMeetingApplication")
+    @Operation(summary = "删除会议申请")
+    public Resp deleteMeetingApplication(@Valid @RequestBody DeleteMeetingApplicationRequest req) {
+        HashMap param = JSONUtil.parse(req).toBean(HashMap.class);
+        param.put("userId", (long)userService.getLoginUserByAuthentication().getUser().getId());
+        int rows = meetingService.deleteMeetingApplication(param);
+        return Resp.ok().put("rows", rows);
     }
 }

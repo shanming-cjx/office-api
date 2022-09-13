@@ -53,6 +53,14 @@ public class UserController {
         return Resp.ok().put("msg",message);
     }
 
+    @GetMapping("/loadUserInfo")
+    @Operation(summary = "登陆成功后加载用户的基本信息")
+    public Resp loadUserInfo() {
+        int userId = userService.getLoginUserByAuthentication().getUser().getId();
+        HashMap summary = userService.searchUserSummary(userId);
+        return Resp.ok(summary);
+    }
+
     @PostMapping("/updatePassword")
     @Operation(summary = "修改密码")
     public Resp updatePassword(@Valid @RequestBody LogoutRequest req) {//TODO 没有原密码的验证，加原密码（前后端）

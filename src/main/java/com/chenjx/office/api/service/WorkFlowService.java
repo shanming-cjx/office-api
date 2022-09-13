@@ -28,5 +28,6 @@ public interface WorkFlowService {
     //查询所有流程实例，即已经开启的流程
     Page<ProcessInstance> searchAllInstances(int startIndex, int pageSize);
 
-
+    //删除流程实例
+    boolean deleteInstance(String instanceId,String reason);
 }

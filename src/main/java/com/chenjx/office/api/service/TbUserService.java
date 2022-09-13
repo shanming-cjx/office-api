@@ -23,6 +23,9 @@ public interface TbUserService {
     //根据userId修改密码
     int updatePasswordByUserId(HashMap map);
 
+    //根据用户id查询用户基本信息
+    HashMap searchUserSummary(int userId);
+
     //多条件分页查询
     PageUtils searchUserByPage(HashMap map);
 

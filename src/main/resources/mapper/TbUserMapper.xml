@@ -185,6 +185,12 @@
         WHERE id=#{userId}
     </update>
 
+    <select id="searchUserSummary" resultType="HashMap">
+        SELECT u.name, u.photo, d.dept_name AS deptName
+        FROM tb_user u LEFT JOIN tb_dept d ON u.dept_id=d.id
+        WHERE u.id=#{userId} AND u.status=1
+    </select>
+
     <select id="searchUserById" parameterType="int" resultType="java.util.HashMap">
         SELECT id, username, name, sex, tel, email, hiredate, role, dept_id AS deptId, status
         FROM tb_user
@@ -210,6 +216,7 @@
         FROM tb_user
         WHERE status = 1
     </select>
+
 
 
 </mapper>

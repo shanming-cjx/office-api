@@ -23,4 +23,6 @@ public interface TbMeetingService {
 
     //根据情况查询当前会议的详细信息（包含出席和缺席）
     HashMap searchMeetingInfo(short status, long id);
+    //删除会议申请
+    int deleteMeetingApplication(HashMap map);
 }

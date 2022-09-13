@@ -56,6 +56,12 @@ public class TbUserServiceImpl implements TbUserService {
     }
 
     @Override
+    public HashMap searchUserSummary(int userId) {//根据用户id查询用户基本信息，用于前端布局的顶部栏
+        HashMap map = userMapper.searchUserSummary(userId);
+        return map;
+    }
+
+    @Override
     public PageUtils searchUserByPage(HashMap map) {//多条件分页查询
         ArrayList<HashMap> list = userMapper.searchUserByPage(map);
         long count = userMapper.searchUserCount(map);
