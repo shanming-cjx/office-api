@@ -14,15 +14,22 @@ import java.util.HashMap;
  */
 @Mapper
 public interface TbMeetingMapper {
-    ArrayList<HashMap> searchOfflineMeetingByPage(HashMap param);//多条件分页查询线下会议
+    ArrayList<HashMap> searchOfflineMeetingByPage(HashMap map);//多条件分页查询线下会议
 
-    long searchOfflineMeetingCount(HashMap param);//多条件分页查询线下会议的总记录数
+    long searchOfflineMeetingCount(HashMap map);//多条件分页查询线下会议的总记录数
 
-    int updateMeetingInstanceId(HashMap param);//更新工作流实例id
+    int updateMeetingInstanceId(HashMap map);//更新工作流实例id
 
     int insert(TbMeeting meeting);//新增线下会议申请
 
-    boolean searchMeetingMembersInSameDept( String uuid);//查询参会的人是否都属于一个部门
+    boolean searchMeetingMembersInSameDept(String uuid);//查询参会的人是否都属于一个部门
+
+    ArrayList<HashMap> searchOfflineMeetingInWeek(HashMap map);//查询指定会议室一周的使用情况
+
+    HashMap searchMeetingInfo(long id);//查询会议申请的详细信息
+
+    HashMap searchCurrentMeetingInfo(long id);//查询当前会议的详细信息（包含出席和缺席）
+
 }
 
 

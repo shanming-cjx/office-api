@@ -25,8 +25,8 @@ public class TbMeetingRoomServiceImpl implements TbMeetingRoomService {
     }
 
     @Override
-    public ArrayList<String> searchFreeMeetingRoom(HashMap param) {
-        ArrayList<String> list = meetingRoomMapper.searchFreeMeetingRoom(param);
+    public ArrayList<String> searchFreeMeetingRoom(HashMap map) {
+        ArrayList<String> list = meetingRoomMapper.searchFreeMeetingRoom(map);
         return list;
     }
 }

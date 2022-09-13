@@ -16,7 +16,7 @@ public interface TbMeetingRoomMapper {
 
     ArrayList<HashMap> searchAllMeetingRoom();
 
-    ArrayList<String> searchFreeMeetingRoom(HashMap param);
+    ArrayList<String> searchFreeMeetingRoom(HashMap map);
 }
 
 

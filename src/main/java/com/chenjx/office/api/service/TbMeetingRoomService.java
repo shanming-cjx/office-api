@@ -12,5 +12,5 @@ public interface TbMeetingRoomService {
     //查询所有会议室
     ArrayList<HashMap> searchAllMeetingRoom();
     //查询空闲的会议室
-    ArrayList<String> searchFreeMeetingRoom(HashMap param);
+    ArrayList<String> searchFreeMeetingRoom(HashMap map);
 }
