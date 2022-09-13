@@ -1,6 +1,6 @@
 package com.chenjx.office.api.config;
 
-import com.chenjx.office.api.common.util.Resp;
+import cn.hutool.json.JSONObject;
 import com.chenjx.office.api.exception.OfficeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,20 +19,18 @@ public class ExceptionAdvice {
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Resp exceptionHandler(Exception e) throws Exception {
-        String msg = "";
-        int code = 200;
+    public String exceptionHandler(Exception e) throws Exception {
+        JSONObject json = new JSONObject();
         //处理后端验证失败产生的异常
         if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException exception = (MethodArgumentNotValidException) e;
-            msg = exception.getBindingResult().getFieldError().getDefaultMessage();
-            code = 400;
+            json.set("error", exception.getBindingResult().getFieldError().getDefaultMessage());
         }
         //处理业务异常
         else if (e instanceof OfficeException) {
             log.error("业务异常", e);
             OfficeException exception = (OfficeException) e;
-            msg = exception.getMsg();
+            json.set("error", exception.getMsg());
         }
         //处理Security的权限异常
         else if(e instanceof AccessDeniedException){
@@ -52,9 +50,10 @@ public class ExceptionAdvice {
         //处理其余的异常
         else {
             log.error("执行异常", e);
-            msg = "执行异常";
+            json.set("error", "执行异常");
         }
-        return Resp.error(code,msg);
+
+        return json.toString();
     }
 
 //    @ResponseBody
