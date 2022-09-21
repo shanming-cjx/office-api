@@ -7,6 +7,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.entity.TbMeeting;
+import com.chenjx.office.api.entity.security.LoginUser;
 import com.chenjx.office.api.exception.OfficeException;
 import com.chenjx.office.api.mapper.TbMeetingMapper;
 import com.chenjx.office.api.mapper.TbUserMapper;
@@ -17,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author chenjx
@@ -65,8 +63,10 @@ public class TbMeetingServiceImpl implements TbMeetingService {
             throw new OfficeException("会议添加失败");
         }
         //工作流所需数据
-        Set<String> roles = userService.getLoginUserByAuthentication().getRoles();//获取申请人（访问人）的角色列表
-        Integer creatorId = userService.getLoginUserByAuthentication().getUser().getId();//获取申请人（访问人）的id
+        LoginUser loginUser = userService.getLoginUserByAuthentication();
+        Set<String> roles = loginUser.getRoles();//获取申请人（访问人）的角色列表
+        Integer creatorId = loginUser.getUser().getId();//获取申请人（访问人）的id
+        String creatorName = loginUser.getUser().getName();//获取申请人的真实姓名。
         //流程所需的变量"${identity=='总经理'}",${manager}部门经理username，"${result=='同意'&&sameDept==false}"跨部门&同意，${gm}总经理username
         Map<String, Object> processValue = new HashMap<>();//流程变量
         if (!roles.contains("总经理")) {//判断申请人是否为总经理
@@ -79,10 +79,17 @@ public class TbMeetingServiceImpl implements TbMeetingService {
             processValue.put("gm", gmUserName);
             //查询参会人是否为同一个部门
             boolean bool = meetingMapper.searchMeetingMembersInSameDept(meeting.getUuid());
-            processValue.put("sameDept", bool);
+            processValue.put("sameDept", bool+"");
         } else {
             processValue.put("identity", "总经理");
         }
+        //将简要的业务信息保存到流程变量，避免多表重复查找
+        processValue.put("title",meeting.getTitle());
+        processValue.put("type","会议申请");
+        processValue.put("status","待审批");
+        processValue.put("creatorId",creatorId);
+        processValue.put("creatorName",creatorName);
+        processValue.put("createDate",DateUtil.today());
         //开启流程实例
         workFlowService.startInstance("meeting", meeting.getTitle(), meeting.getUuid(), processValue);
         //TODO quartZ的时间要精确到秒

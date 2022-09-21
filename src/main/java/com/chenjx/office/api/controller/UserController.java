@@ -50,7 +50,8 @@ public class UserController {
         LoginUser loginUser = userService.getLoginUserByAuthentication();
         Integer userid = loginUser.getUser().getId();
         String message = redisCache.deleteObject("login:"+userid) ? "登出成功" : "登出失败";
-        return Resp.ok().put("msg",message);
+        System.out.println(message);
+        return Resp.ok();
     }
 
     @GetMapping("/loadUserInfo")

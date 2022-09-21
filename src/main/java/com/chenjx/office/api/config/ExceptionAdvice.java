@@ -2,6 +2,7 @@ package com.chenjx.office.api.config;
 
 import cn.hutool.json.JSONObject;
 import com.chenjx.office.api.exception.OfficeException;
+import com.chenjx.office.api.exception.WorkflowException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,9 +32,13 @@ public class ExceptionAdvice {
             log.error("业务异常", e);
             OfficeException exception = (OfficeException) e;
             json.set("error", exception.getMsg());
+        } else if (e instanceof WorkflowException) {
+            log.error("业务异常", e);
+            WorkflowException exception = (WorkflowException) e;
+            json.set("error", exception.getMsg());
         }
         //处理Security的权限异常
-        else if(e instanceof AccessDeniedException){
+        else if (e instanceof AccessDeniedException) {
 //            log.error("访问的权限不足", e);
 //            msg = "访问权限不足";
 //            msg = e.getMessage();
@@ -41,7 +46,7 @@ public class ExceptionAdvice {
             throw e;
         }
         //处理Security的登录异常
-        else if(e instanceof AuthenticationException){
+        else if (e instanceof AuthenticationException) {
 //            log.error("用户登录认证失败", e);
 //            msg = e.getMessage();
 //            code = 401;

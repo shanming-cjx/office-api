@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chenjx.office.api.mapper.ApprovalMapper">
+
+    <select id="searchMyTasks_1" parameterType="HashMap" resultType="java.util.HashMap">
+        SELECT
+            CONCAT(
+                    '{',
+                    GROUP_CONCAT(
+                            CONCAT('"',v.NAME_ , '":"',v.TEXT_ , '"' )
+                        ),
+                    '}'
+                ) as variable
+        FROM act_ru_task t
+                 JOIN act_ru_variable v ON t.ID_  =  v.TASK_ID_
+        WHERE (v.NAME_ = 'title' OR v.NAME_ = 'type' OR v.NAME_ = 'status' OR v.NAME_ = 'creatorId' OR v.NAME_ = 'createDate')
+            AND t.ASSIGNEE_ = #{userName}
+        GROUP BY t.ID_
+        LIMIT #{start},#{size}
+    </select>
+
+    <select id="searchMyTasks_2" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            JSON_ARRAY(JSON_OBJECTAGG(v.NAME_ , v.TEXT_)) AS pageList
+        FROM act_ru_task t
+                 JOIN act_ru_variable v ON t.ID_  =  v.TASK_ID_
+        WHERE (v.NAME_ = 'title' OR v.NAME_ = 'type' OR v.NAME_ = 'status' OR v.NAME_ = 'creatorId' OR v.NAME_ = 'createDate')
+          AND t.ASSIGNEE_ = #{userName}
+        GROUP BY t.ID_
+        LIMIT #{start},#{size}
+    </select>
+
+    <select id="searchMyTasks" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            JSON_ARRAYAGG(t_object.page) AS pageList, COUNT(*) AS totalCount
+        FROM
+            (SELECT
+                 JSON_MERGE_PRESERVE(
+                         JSON_OBJECTAGG(v.NAME_ , v.TEXT_),
+                         JSON_OBJECT('taskId',t.ID_, 'processId',t.PROC_INST_ID_)
+                     ) AS page
+             FROM act_ru_task t
+                 JOIN act_ru_variable v ON t.ID_  =  v.TASK_ID_
+             WHERE (v.NAME_ = 'title' OR v.NAME_ = 'type' OR v.NAME_ = 'status' OR v.NAME_ = 'creatorId' OR v.NAME_ = 'createDate' OR v.NAME_ = 'creatorName')
+                AND t.ASSIGNEE_ = #{userName}
+             GROUP BY t.ID_
+             LIMIT #{startIndex},#{pageSize}
+            ) as t_object
+    </select>
+
+</mapper>
