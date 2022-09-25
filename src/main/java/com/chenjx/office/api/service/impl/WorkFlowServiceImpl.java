@@ -1,6 +1,5 @@
 package com.chenjx.office.api.service.impl;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 import com.chenjx.office.api.common.util.PageUtils;
 import com.chenjx.office.api.exception.WorkflowException;
@@ -84,21 +83,17 @@ public class WorkFlowServiceImpl implements WorkFlowService {
     @Override
     public PageUtils searchMyTasks(int startIndex, int pageSize, HashMap map) {//查询我的待办任务
         //查询条件
-        String status = MapUtil.getStr(map, "status");
-        String creatorName = MapUtil.getStr(map, "creatorName");
-        String type = MapUtil.getStr(map, "type");
-        String instanceId = MapUtil.getStr(map, "instanceId");
+//        String status = MapUtil.getStr(map, "status");
+//        String creatorName = MapUtil.getStr(map, "creatorName");
+//        String type = MapUtil.getStr(map, "type");
+//        String instanceId = MapUtil.getStr(map, "instanceId");
         map.put("startIndex", startIndex);
         map.put("pageSize", pageSize);
-        HashMap resultMap;
-        if ("待审批".equals(status)) {
-            resultMap = approvalMapper.searchMyTasks(map);
-            List list = JSONUtil.parseArray(resultMap.get("pageList"));
-            Long totalCount = (long)resultMap.get("totalCount");
-            return new PageUtils(list,totalCount, (Integer) map.get("page"), (Integer) map.get("length"));
-        }
 
-        return null;
+        HashMap resultMap = approvalMapper.searchMyTasks(map);
+        List list = JSONUtil.parseArray(resultMap.get("pageList"));
+        Long totalCount = (long) resultMap.get("totalCount");
+        return new PageUtils(list, totalCount, (Integer) map.get("page"), (Integer) map.get("length"));
     }
 
     @Override

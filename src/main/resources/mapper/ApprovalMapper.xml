@@ -33,21 +33,53 @@
     </select>
 
     <select id="searchMyTasks" parameterType="HashMap" resultType="HashMap">
+
         SELECT
             JSON_ARRAYAGG(t_object.page) AS pageList, COUNT(*) AS totalCount
         FROM
+        <if test="status == '待审批'">
             (SELECT
-                 JSON_MERGE_PRESERVE(
-                         JSON_OBJECTAGG(v.NAME_ , v.TEXT_),
-                         JSON_OBJECT('taskId',t.ID_, 'processId',t.PROC_INST_ID_)
-                     ) AS page
-             FROM act_ru_task t
-                 JOIN act_ru_variable v ON t.ID_  =  v.TASK_ID_
-             WHERE (v.NAME_ = 'title' OR v.NAME_ = 'type' OR v.NAME_ = 'status' OR v.NAME_ = 'creatorId' OR v.NAME_ = 'createDate' OR v.NAME_ = 'creatorName')
-                AND t.ASSIGNEE_ = #{userName}
-             GROUP BY t.ID_
-             LIMIT #{startIndex},#{pageSize}
+                JSON_MERGE_PRESERVE(
+                JSON_OBJECTAGG(v.NAME_ , v.TEXT_),
+                JSON_OBJECT('taskId',t.ID_, 'processInsId',t.PROC_INST_ID_)
+                ) AS page
+            FROM act_ru_task t
+            JOIN act_ru_variable v ON t.ID_  =  v.TASK_ID_
+            WHERE (v.NAME_ = 'title' OR v.NAME_ = 'type' OR v.NAME_ = 'status' OR v.NAME_ = 'creatorId'
+                       OR v.NAME_ = 'createDate' OR v.NAME_ = 'creatorName')
+            AND t.ASSIGNEE_ = #{userName}
+            GROUP BY t.ID_
+            LIMIT #{startIndex}, #{pageSize}
             ) as t_object
+        </if>
+        <if test="status == '已审批' || status == '已结束' ">
+            (SELECT
+                JSON_MERGE_PRESERVE(
+                JSON_OBJECTAGG(hv.NAME_ , hv.TEXT_),
+                JSON_OBJECT('taskId',ht.ID_, 'processInsId',ht.PROC_INST_ID_)
+                ) AS page
+            FROM act_hi_taskinst ht
+            JOIN act_hi_varinst hv ON ht.ID_ = hv.TASK_ID_
+            JOIN act_hi_procinst hp on ht.PROC_INST_ID_ = hp.PROC_INST_ID_
+            WHERE ht.ASSIGNEE_ = #{userName}
+            <if test="status == '已审批' ">AND hp.END_TIME_ IS NULL</if>
+            <if test="status == '已结束' ">AND hp.END_TIME_ IS NOT NULL</if>
+            AND ht.END_TIME_ IS NOT NULL
+            AND (hv.NAME_ = 'title' OR hv.NAME_ = 'type' OR hv.NAME_ = 'status' OR hv.NAME_ = 'result'
+                    OR hv.NAME_ = 'creatorId' OR hv.NAME_ = 'createDate' OR hv.NAME_ = 'creatorName')
+            GROUP BY hv.TASK_ID_
+            LIMIT #{startIndex},#{pageSize}  ) AS t_object
+        </if>
+        WHERE 1=1
+        <if test="creatorName != null and creatorName != '' ">
+            AND t_object.page -> '$.creatorName' LIKE '%${creatorName}%'
+        </if>
+        <if test="type != null and type != '' ">
+            AND t_object.page -> '$.type' LIKE '%${type}%'
+        </if>
+        <if test="instanceId != null and instanceId != '' ">
+            AND t_object.page -> '$.processInsId' = #{instanceId}
+        </if>
     </select>
 
 </mapper>

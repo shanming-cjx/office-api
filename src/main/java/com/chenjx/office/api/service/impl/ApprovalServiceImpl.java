@@ -16,6 +16,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Override
     public PageUtils searchTaskByPage(HashMap map) {
+        //分页数据的转换
         int pageSize = (Integer) map.get("length");
         int startIndex = ((Integer) map.get("page") - 1) * pageSize;//偏移量
         PageUtils page = workFlowService.searchMyTasks(startIndex, pageSize, map);

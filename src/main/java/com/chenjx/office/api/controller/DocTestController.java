@@ -108,7 +108,7 @@ public class DocTestController {//访问localhost:8090/office-api/swagger-ui.htm
                 .complete()
                 .withTaskId(task.getId())
                 .withVariable("result", result)
-                        .withVariable("status",status)
+                .withVariable("status", status)
                 .build());
         System.out.println("任务执行完成");
         return Resp.ok();
